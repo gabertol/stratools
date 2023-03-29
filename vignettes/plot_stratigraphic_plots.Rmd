@@ -26,4 +26,9 @@ library(stratools)
 a<-tibble(6:17)
 inv_trans(a)
 ```
+#.2 test
+```{r}
+r22<-read.csv("./data/reis_22.csv")
+
+```
 
