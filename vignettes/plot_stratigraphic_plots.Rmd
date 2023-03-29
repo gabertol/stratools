@@ -1,0 +1,29 @@
+---
+title: "plot_stratigraphic_plots"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{plot_stratigraphic_plots}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# library
+```{r setup}
+
+devtools::install_github("gabertol/stratools")
+library(stratools)
+```
+
+#1. test
+```{r}
+a<-tibble(6:17)
+inv_trans(a)
+```
+
