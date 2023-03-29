@@ -14,3 +14,5 @@ Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
+URL: https://github.com/gabertol/stratools
+BugReports: https://github.com/gabertol/stratools/issues
