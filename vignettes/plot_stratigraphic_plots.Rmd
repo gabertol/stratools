@@ -28,7 +28,19 @@ inv_trans(a)
 ```
 #.2 test
 ```{r}
-r22<-read.csv("./data/reis_22.csv")
+r22<-read.csv(paste(find.package("stratools"),"/data/reis_22.csv",sep="")) 
+
+library(mapview)
+library(sf)
+
+r22 %>% 
+  st_as_sf(coords=c("X","Y"),crs=4326)%>%
+  mapview()
+
+
+BD<-r22 %>% dplyr::select(sample,phi,bed,thick=THICKNESS..m.,facies,sub="sub.facies.association") 
+
+logploter(BD,well="PR004")
 
 ```
 

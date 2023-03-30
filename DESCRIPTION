@@ -1,14 +1,13 @@
 Package: stratools
 Type: Package
-Title: What the Package Does (Title Case)
+Title: stratools
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Author: Dr. Gabriel Bertolini
+Maintainer: Gabriel Bertolini <gabertol@gmail.com>
+Description: Wrap-up functions to sedimentary log plotting.
 License: What license is it under?
 Encoding: UTF-8
-Depends: tidyverse, stratigrapheR
+Depends: tidyverse, StratigrapheR
 LazyData: true
 Suggests: 
     knitr,

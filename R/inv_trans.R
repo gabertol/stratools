@@ -10,16 +10,24 @@
 #' a<-c(6:17)
 #' inv_trans(a)
 #'
-inv_trans <- function(column) {
+inv_trans <- function(dataframe) {
 
-  column %>% dplyr::select(one=names(.)) %>%
+  dataframe %>%
+    dplyr::select(one="phi_alter") %>%
     dplyr::mutate(max1=max(one),
                   min1=min(one),
                   dif=max1-min1,
                   dist=one-dif,
                   pen=one-dist,
                   val=pen-dist,
-                  value=ifelse(pen %% 2 == 0,val,val+1)) %>%
-    dplyr::select(value)
+                  value=ifelse(pen %% 2 == 0,val,val+1),
+                  phi_alter=value-(pen-1))->DT# %>%
+   # dplyr::select(phi_alter)->DT
+
+  cbind(dataframe,DT)
+
+#  cbind(dataframe %>% dplyr::select(-phi_alter),DT)
+
 
 }
+
