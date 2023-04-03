@@ -3,8 +3,10 @@ title: "plot_stratigraphic_plots"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{plot_stratigraphic_plots}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r, include = FALSE}
@@ -20,16 +22,50 @@ knitr::opts_chunk$set(
 devtools::install_github("gabertol/stratools")
 library(stratools)
 ```
+#Biblioteca
+```{r}
+GS_CLASS<-tribble(~phi,~mm,~gs_name,~gs_other,
+                  -12,4096,"boulder","boulder",
+                  -11,2048,"boulder","boulder",
+                  -10,1024,"boulder","boulder",
+                  -9,512,"boulder","boulder",
+           -8,256.000,"boulder","boulder",
+           -7,128,"boulder","boulder",
+           -6,64.000,"cobble","cobble",
+           -5,32,"very coarse gravel","pebble",
+           -4,16,"coarse gravel","pebble",
+           -3,8,"medium gravel","pebble",
+           -2,4.000,"fine gravel","pebble",
+           -1,2.00,"very fine gravel","granules",
+           0,1.000,"very coarse sand","sand",
+           1,0.500,"coarse sand","sand",
+           2,0.250,"medium sand","sand",
+           3,0.125,"fine sand","sand",
+           4,0.060,"very fine sand","sand",
+           5,0.031,"coarse silt","silt",
+           6,0.016,"medium silt","silt",
+           7,0.008,"fine silt","silt",
+           8,0.004,"very fine silt","silt",
+           9,0.002,"clay","mud",
+           10,0.001,"clay","mud") %>% 
+  mutate(rock=case_when(phi>=5~"mudstone",
+                        phi<=-1~"conglomerate",
+                        TRUE~"sandstone"))
+
+
+write.csv(GS_CLASS,paste(getwd(),"/data/grain_size_class.csv",sep=""))
+```
 
 #1. test
 ```{r}
-a<-tibble(6:17)
+a<-tibble(phi_alter=6:17)
 inv_trans(a)
 ```
 #.2 test
 ```{r}
 r22<-read.csv(paste(find.package("stratools"),"/data/reis_22.csv",sep="")) 
-
+r22<-read.csv("G:/Meu Drive/Academicos/Pacotes/stratools/data2/reis_22.csv")
+  
 library(mapview)
 library(sf)
 
@@ -37,10 +73,35 @@ r22 %>%
   st_as_sf(coords=c("X","Y"),crs=4326)%>%
   mapview()
 
+BD<-r22 %>% dplyr::select(sample,phi,bed,thick=Bed.thickness,facies,sub="sub.facies.association") %>% 
+  filter(sample %in% c("UY005","UY007","UY008","UY009","UY010","PR004","PR005","PR010","PR011","Guara 0","Guara 1","Guara 2","Guara 3","Guara 4"))
 
-BD<-r22 %>% dplyr::select(sample,phi,bed,thick=THICKNESS..m.,facies,sub="sub.facies.association") 
 
-logploter(BD,well="PR004")
+log_plot(BD,well="PR004")    
+log_plot(BD,well="UY007",correlation = TRUE) 
+log_plot(BD,well="UY008",x_scale=FALSE,y_scale=FALSE) 
+corr_plot(BD,grainsize=FALSE,x_scale=FALSE)
+
+
+BD<-BD %>% 
+  mutate(color=case_when(
+    sub=="Cpd"~"tan1",
+    sub=="Cpsb"~"tan2",
+    sub=="Cpcb"~"tan3",
+    sub=="Ce"~"tan4",
+    sub=="Ad"~"yellow1",
+    sub=="As"~"yellow3",
+    sub=="Fs"~"gray50",
+    sub=="Fm"~"gray65",
+    TRUE~"black"
+  )) 
+  
+log_plot(BD,well="UY009")    
+corr_plot(BD)
+corr_plot(BD,grainsize=FALSE,x_scale=FALSE)
+
+
+
+
 
 ```
-
