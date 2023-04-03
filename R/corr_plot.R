@@ -8,7 +8,7 @@
 #' @examples
 #'
 
-corr_plot <- function(dataframe,direction=...) {
+corr_plot <- function(dataframe,direction=NULL,...) {
 
   ORDER<-unique(dataframe$sample)
   N_PLOT<-length(ORDER)
