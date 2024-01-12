@@ -10,7 +10,7 @@
 #' a<-c(6:17)
 #' inv_trans(a)
 #'
-inv_trans <- function(dataframe,convert="phi",lag=1) {
+inv_trans <- function(dataframe,convert="phi") {
 
 
   dataframe %>%

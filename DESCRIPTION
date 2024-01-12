@@ -15,3 +15,6 @@ Suggests:
 VignetteBuilder: knitr
 URL: https://github.com/gabertol/stratools
 BugReports: https://github.com/gabertol/stratools/issues
+Imports: 
+    dplyr,
+    shiny

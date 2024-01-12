@@ -20,6 +20,7 @@ knitr::opts_chunk$set(
 ```{r setup}
 
 devtools::install_github("gabertol/stratools")
+
 library(stratools)
 ```
 #Biblioteca
@@ -69,18 +70,19 @@ r22<-read.csv("G:/Meu Drive/Academicos/Pacotes/stratools/data2/reis_22.csv")
 library(mapview)
 library(sf)
 
-r22 %>% 
+r22 %>%
   st_as_sf(coords=c("X","Y"),crs=4326)%>%
   mapview()
 
 BD<-r22 %>% dplyr::select(sample,phi,bed,thick=Bed.thickness,facies,sub="sub.facies.association") %>% 
-  filter(sample %in% c("UY005","UY007","UY008","UY009","UY010","PR004","PR005","PR010","PR011","Guara 0","Guara 1","Guara 2","Guara 3","Guara 4"))
+  dplyr::filter(sample %in% c("UY005","UY007","UY010","PR004","PR005","PR010","PR011","Guara 0","Guara 1"))
 
 
 log_plot(BD,well="PR004")    
+
 log_plot(BD,well="UY007",correlation = TRUE) 
-log_plot(BD,well="UY008",x_scale=FALSE,y_scale=FALSE) 
-corr_plot(BD,grainsize=FALSE,x_scale=FALSE)
+log_plot(BD,well="UY005",x_scale=FALSE,y_scale=TRUE) 
+corr_plot(BD,grainsize=TRUE,x_scale=TRUE, show_legend = TRUE)
 
 
 BD<-BD %>% 
@@ -94,14 +96,143 @@ BD<-BD %>%
     sub=="Fs"~"gray50",
     sub=="Fm"~"gray65",
     TRUE~"black"
-  )) 
+  )) %>% 
+  mutate(sub=ifelse(is.na(sub),"covered",sub))
   
-log_plot(BD,well="UY009")    
+log_plot(BD,well="UY010")    
 corr_plot(BD)
 corr_plot(BD,grainsize=FALSE,x_scale=FALSE)
 
 
 
-
+  tabela_correspondencia <- tribble(
+    ~phi, ~mm, ~gs_name, ~gs_other,~pt_br,~abrev,~simp,
+    -12, 4096, "boulder", "boulder","matacão","Mt","NA",
+    -11, 2048, "boulder", "boulder","matacão","Mt","NA",
+    -10, 1024, "boulder", "boulder","matacão","Mt","NA",
+    -9, 512, "boulder", "boulder","matacão","Mt","NA",
+    -8, 256.000, "boulder", "boulder","matacão","Mt","NA",
+    -7, 128, "boulder", "boulder","matacão","Mt","Boulder",
+    -6, 64.000, "cobble", "cobble","seixo","Sx","Cobble",
+    -5, 32, "very coarse gravel", "pebble","cascalho","Cb","NA",
+    -4, 16, "coarse gravel", "pebble","cascalho","Cb","NA",
+    -3, 8, "medium gravel", "pebble","cascalho","Cb","NA",
+    -2, 4.000, "fine gravel", "pebble","cascalho","Cb","Pebble",
+    -1, 2.00, "very fine gravel", "granules","granulos","Gr","Granules",
+    0, 1.000, "very coarse sand", "sand","areia","S","NA",
+    1, 0.500, "coarse sand", "sand","areia","S","NA",
+    2, 0.250, "medium sand", "sand","areia","S","NA",
+    3, 0.125, "fine sand", "sand","areia","S","NA",
+    4, 0.060, "very fine sand", "sand","areia","S","Sand",
+    5, 0.031, "coarse silt", "silt","silte","St","NA",
+    6, 0.016, "medium silt", "silt","silte","St","NA",
+    7, 0.008, "fine silt", "silt","silte","St","NA",
+    8, 0.004, "very fine silt", "silt","silte","St","Silt",
+    9, 0.002, "clay", "mud","argila","Cl","NA",
+    10, 0.001, "clay", "mud","argila","Cl","Clay"
+  )
 
 ```
+# legend
+```{r}
+
+legend <- data.frame(litho = c("S", "L", "C"), # Symbology 
+                       col = c("grey30", "grey90", "white"), # data table 
+                       density = c(30, 0,10), 
+                       angle = c(180, 0, 45), 
+                       stringsAsFactors = FALSE)
+
+
+legend_maker(BD,class="sub")
+legend_maker <- function(dataframe,class="facies",col="color") {
+
+lege_BD<-dataframe %>% dplyr::select(class_leg=class,color=col) %>%
+  group_by(class_leg) %>% 
+    summarise(color=unique(color)) %>% 
+    ungroup() %>% 
+   filter(!is.na(class_leg)) %>% 
+    mutate(id=row_number())
+
+  class1<-lege_BD %>% dplyr::select(class_leg)
+  color <-lege_BD %>% dplyr::select(color)
+
+
+nrows<-length(id)
+ORDER<-as.vector(lege_BD$id)
+CLASS<-as.vector(lege_BD$class_leg)
+      
+legend<-tibble(class1,
+               color)
+
+opar <- par() # Save initial graphical parameters 
+   
+    par(mar = c(0,0,0,0), mfrow = c(nrows,1))
+    
+    lege_BD %>%
+    dplyr::select(CLASS="class_leg",
+                  ORDER="id") %>% 
+    map2(CLASS,ORDER,class_plot())
+ 
+ }
+   KK<-
+      lege_BD %>%
+    dplyr::select(CLASS="class_leg",
+                  ORDER="id")
+    
+    KK
+    }
+    
+    
+  
+   walk2(CLASS,ORDER,class_plot(CLASS,O))
+    }  
+legend_maker(BD,class="sub")
+  
+
+  
+  par(mar = opar$mar, mfrow = opar$mfrow)
+
+
+}
+
+
+
+
+
+
+nlegend(t =ORDER[1] , cex = 2)
+multigons(i = rep(1, 4), c(-1,-1,1,1), c(-1,1,1,-1), 
+                col = legend$color[1])
+   opar <- par() # Save initial graphical parameters 
+   
+    par(mar = c(0,0,0,0), mfrow = c(nrows,1))
+    
+walk2(ORDER,CLASS,class_plot)
+  
+
+  
+  par(mar = opar$mar, mfrow = opar$mfrow)
+    
+  
+
+  nlegend(t = i, cex = 2)
+f_t(1)
+
+
+
+for (i,j in CLASS,ORDER) { # Loop over loop.vector
+    nlegend(t = i, cex = 2)
+    f_t(j)
+    }
+f_t<-function(ORDER){
+    multigons(i = rep(1, 4), c(-1,-1,1,1), c(-1,1,1,-1), 
+                col = legend$color[ORDER])
+              } 
+
+class_plot<-function(CLASS,ORDER){
+  nlegend(t = CLASS, cex = 2)
+  f_t(ORDER)
+  }
+
+```
+
