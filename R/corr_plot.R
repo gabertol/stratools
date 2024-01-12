@@ -1,11 +1,13 @@
-corr_plot <- function(dataframe, direction = NULL, show_legend = TRUE, color_name = "color", labels_facies_name = "sub", ...) {
+corr_plot <- function(dataframe, direction = NULL, show_legend = TRUE, color_name = "color", labels_facies_name = "sub",Y_SC=TRUE, ...) {
   ORDER <- unique(dataframe$sample)
   N_PLOT <- length(ORDER)
 
   # Configure o layout dos plots com espaço extra para a legenda
   par(mfrow = c(1, N_PLOT + 1))  # +1 para incluir espaço para a legenda
 
-  for (i in ORDER) {
+  log_plot(data = dataframe, well = ORDER[1], correlation = TRUE, y_scale = Y_SC, ...)
+
+  for (i in ORDER[-1]) {
     log_plot(data = dataframe, well = i, correlation = TRUE, y_scale = FALSE, ...)
   }
 

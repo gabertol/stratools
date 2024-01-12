@@ -169,4 +169,3 @@ log_plot<-function(data,
 }
 
 
-
