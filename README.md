@@ -3,6 +3,7 @@ Wrap-up functions around StratigrapheR package for sedimentary logs creation
 
 - Functions to plot single and batch plots
 - Function to to fix an Y scale for consistent correlation plots
+- Use grain-size info to plot x-scale
 
 1- Install devtools in R install.packages("devtools")
 
