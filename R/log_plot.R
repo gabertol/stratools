@@ -33,6 +33,33 @@
 #'        Value used for grain size calculations. Default is 5.
 #'
 
+tabela_correspondencia <- tribble(
+  ~phi, ~mm, ~gs_name, ~gs_other,~pt_br,~abrev,~simp,
+  -12, 4096, "boulder", "boulder","matacão","Mt",NA,
+  -11, 2048, "boulder", "boulder","matacão","Mt",NA,
+  -10, 1024, "boulder", "boulder","matacão","Mt",NA,
+  -9, 512, "boulder", "boulder","matacão","Mt",NA,
+  -8, 256.000, "boulder", "boulder","matacão","Mt",NA,
+  -7, 128, "boulder", "boulder","matacão","Mt","Boulder",
+  -6, 64.000, "cobble", "cobble","seixo","Sx","Cobble",
+  -5, 32, "very coarse gravel", "pebble","cascalho","Cb",NA,
+  -4, 16, "coarse gravel", "pebble","cascalho","Cb",NA,
+  -3, 8, "medium gravel", "pebble","cascalho","Cb",NA,
+  -2, 4.000, "fine gravel", "pebble","cascalho","Cb","Pebble",
+  -1, 2.00, "very fine gravel", "granules","granulos","Gr","Granules",
+  0, 1.000, "very coarse sand", "sand","areia","S",NA,
+  1, 0.500, "coarse sand", "sand","areia","S",NA,
+  2, 0.250, "medium sand", "sand","areia","S",NA,
+  3, 0.125, "fine sand", "sand","areia","S",NA,
+  4, 0.060, "very fine sand", "sand","areia","S","Sand",
+  5, 0.031, "coarse silt", "silt","silte","St",NA,
+  6, 0.016, "medium silt", "silt","silte","St",NA,
+  7, 0.008, "fine silt", "silt","silte","St",NA,
+  8, 0.004, "very fine silt", "silt","silte","St","Silt",
+  9, 0.002, "clay", "mud","argila","Cl",NA,
+  10, 0.001, "clay", "mud","argila","Cl","Clay"
+)
+
 log_plot<-function(data,
                    well,
                    sample_name="sample",
@@ -48,7 +75,7 @@ log_plot<-function(data,
                    x_scale=TRUE,
                    gs_less_size=5,
                    cex=0.5,
-                   srt = 0){
+                   simp = TRUE){
 
   # Variables
   sample<-data %>% dplyr::select(sample=sample_name)
@@ -111,38 +138,13 @@ log_plot<-function(data,
 
 
   # X scale
-  tabela_correspondencia <- tribble(
-    ~phi, ~mm, ~gs_name, ~gs_other,~pt_br,~abrev,~simp,
-    -12, 4096, "boulder", "boulder","matacão","Mt","NA",
-    -11, 2048, "boulder", "boulder","matacão","Mt","NA",
-    -10, 1024, "boulder", "boulder","matacão","Mt","NA",
-    -9, 512, "boulder", "boulder","matacão","Mt","NA",
-    -8, 256.000, "boulder", "boulder","matacão","Mt","NA",
-    -7, 128, "boulder", "boulder","matacão","Mt","Boulder",
-    -6, 64.000, "cobble", "cobble","seixo","Sx","Cobble",
-    -5, 32, "very coarse gravel", "pebble","cascalho","Cb","NA",
-    -4, 16, "coarse gravel", "pebble","cascalho","Cb","NA",
-    -3, 8, "medium gravel", "pebble","cascalho","Cb","NA",
-    -2, 4.000, "fine gravel", "pebble","cascalho","Cb","Pebble",
-    -1, 2.00, "very fine gravel", "granules","granulos","Gr","Granules",
-    0, 1.000, "very coarse sand", "sand","areia","S","NA",
-    1, 0.500, "coarse sand", "sand","areia","S","NA",
-    2, 0.250, "medium sand", "sand","areia","S","NA",
-    3, 0.125, "fine sand", "sand","areia","S","NA",
-    4, 0.060, "very fine sand", "sand","areia","S","Sand",
-    5, 0.031, "coarse silt", "silt","silte","St","NA",
-    6, 0.016, "medium silt", "silt","silte","St","NA",
-    7, 0.008, "fine silt", "silt","silte","St","NA",
-    8, 0.004, "very fine silt", "silt","silte","St","Silt",
-    9, 0.002, "clay", "mud","argila","Cl","NA",
-    10, 0.001, "clay", "mud","argila","Cl","Clay"
-  )
+
 
 
   tibble(phi_alter = c(min(DF_cor$phi_alter2):max(DF_cor$phi_alter2)),
          phi = c(max(DF_cor$phi):min(DF_cor$phi))) %>%
     left_join(.,tabela_correspondencia,by="phi") %>%
-    pull(gs_name)->x_label
+    pull("simp")->x_label
 
   # Plot
 
@@ -159,7 +161,7 @@ log_plot<-function(data,
   } else {}
 
   multigons(basic.log$i, basic.log$xy, basic.log$dt, col = DF_loc$col)
-  bedtext(labels = DF_loc$facies1, l = DF_loc$l, r = DF_loc$r, x = -0.5, ymin = NA, arg = list(cex = cex,srt=srt))
+  bedtext(labels = DF_loc$facies1, l = DF_loc$l, r = DF_loc$r, x = -0.5, ymin = NA, arg = list(cex = cex))
 
   # Calcular a posição central com base na escala x
   x_center <- (par()$usr[1] + par()$usr[2]) / 2
