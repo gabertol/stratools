@@ -47,7 +47,8 @@ log_plot<-function(data,
                    y_scale=TRUE,
                    x_scale=TRUE,
                    gs_less_size=5,
-                   cex=0.5){
+                   cex=0.5,
+                   srt = 0){
 
   # Variables
   sample<-data %>% dplyr::select(sample=sample_name)
@@ -158,7 +159,7 @@ log_plot<-function(data,
   } else {}
 
   multigons(basic.log$i, basic.log$xy, basic.log$dt, col = DF_loc$col)
-  bedtext(labels = DF_loc$facies1, l = DF_loc$l, r = DF_loc$r, x = -0.5, ymin = NA, arg = list(cex = cex))
+  bedtext(labels = DF_loc$facies1, l = DF_loc$l, r = DF_loc$r, x = -0.5, ymin = NA, arg = list(cex = cex,srt=srt))
 
   # Calcular a posição central com base na escala x
   x_center <- (par()$usr[1] + par()$usr[2]) / 2
